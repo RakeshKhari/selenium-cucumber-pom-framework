@@ -6,26 +6,43 @@ on:
       - main
 
 jobs:
-
   test:
-
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
+      # ✅ Install Chrome
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-chrome-stable -y
 
+      # ✅ Setup Java
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
+      # ✅ Cache Maven (faster builds)
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: maven-${{ hashFiles('**/pom.xml') }}
+
+      # ✅ Run Tests (CI safe)
       - name: Execute Tests
         run: mvn clean test
+        env:
+          CI: true
 
+      # ✅ Upload Reports
       - name: Upload Reports
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: extent-report
           path: reports/
