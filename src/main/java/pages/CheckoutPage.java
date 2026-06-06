@@ -26,39 +26,27 @@ public class CheckoutPage {
 
     public void completeCheckout() {
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        WebDriverWait wait =
-                new WebDriverWait(driver,
-                        Duration.ofSeconds(10));
+        // Wait for correct page
+        wait.until(ExpectedConditions.urlContains("checkout-step-one"));
 
-        wait.until(
-                ExpectedConditions.urlContains(
-                        "checkout-step-one"));
+        // Fill form
+        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName)).sendKeys("Rakesh");
+        driver.findElement(lastName).sendKeys("Khari");
+        driver.findElement(zipCode).sendKeys("110001");
 
-        wait.until(
-                ExpectedConditions
-                        .elementToBeClickable(firstName));
+        // Continue button (safe click)
+        wait.until(ExpectedConditions.elementToBeClickable(continueBtn)).click();
 
-        System.out.println(
-                driver.findElement(firstName).isDisplayed());
+        // IMPORTANT: wait for next page load
+        wait.until(ExpectedConditions.urlContains("checkout-step-two"));
 
-        System.out.println(
-                driver.findElement(firstName).isEnabled());
+        // Finish button FIX (most important change)
+        By finishBtn = By.id("finish");
 
-        driver.findElement(firstName)
-                .sendKeys("Rakesh");
-
-        driver.findElement(lastName)
-                .sendKeys("Khari");
-
-        driver.findElement(zipCode)
-                .sendKeys("110001");
-
-        driver.findElement(continueBtn).click();
-
-        wait.until(
-                ExpectedConditions
-                        .elementToBeClickable(finishBtn));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(finishBtn));
+        wait.until(ExpectedConditions.elementToBeClickable(finishBtn));
 
         driver.findElement(finishBtn).click();
     }
