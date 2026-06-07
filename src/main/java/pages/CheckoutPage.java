@@ -22,7 +22,7 @@ public class CheckoutPage {
     By continueBtn = By.id("continue");
     By finishBtn = By.id("finish");
 
-    By successMsg = By.className("complete-header");
+    By successMsg = By.xpath("//h2[contains(text(),'Thank you for your order!')]");
 
     public void completeCheckout() {
 
